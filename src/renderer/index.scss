@@ -1,0 +1,29 @@
+body {
+  -webkit-app-region: drag;
+  background: rgba(0, 0, 0, 0);
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#app,
+#container {
+  height: 100%;
+  overflow: hidden;
+}
+
+#container {
+  scroll-behavior: smooth;
+}
+
+.text {
+  color: #ffffffaa;
+  -webkit-text-stroke: 1px #000000;
+  font-family: Arial;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: right;
+  padding-right: 5px;
+}
