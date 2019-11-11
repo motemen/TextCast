@@ -104,5 +104,6 @@ app.on("ready", () => {
       res.send();
     });
   });
-  app.listen(options.port, "localhost");
+  const server = app.listen(options.port, "localhost");
+  server.timeout = 0;
 });
