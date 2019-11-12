@@ -1,5 +1,5 @@
-import "./index.scss";
-import content from "./index.html";
+import "./app.scss";
+import content from "./app.html";
 import { ipcRenderer } from "electron";
 
 import { EVENT_CLEAR, EVENT_NEW_TEXT } from "../common/events";
