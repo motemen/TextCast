@@ -5,6 +5,8 @@ import * as express from "express";
 import * as readline from "readline";
 import * as commandLineArgs from "command-line-args";
 
+import { EVENT_CLEAR, EVENT_NEW_TEXT } from "../common/events";
+
 const options = commandLineArgs(
   [
     {
@@ -92,18 +94,23 @@ app.on("ready", () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.post("/post", (req, res) => {
-    mainWindow!.webContents.send("NEW_TEXT", req.body.text);
+    mainWindow!.webContents.send(EVENT_NEW_TEXT, req.body.text);
     res.send();
   });
   app.put("/stream", (req, res) => {
     const rl = readline.createInterface({ input: req });
     rl.on("line", line => {
-      mainWindow!.webContents.send("NEW_TEXT", line);
+      mainWindow!.webContents.send(EVENT_NEW_TEXT, line);
     });
     rl.on("close", () => {
       res.send();
     });
   });
+  app.post("/clear", (req, res) => {
+    mainWindow!.webContents.send(EVENT_CLEAR);
+    res.send();
+  });
+
   const server = app.listen(options.port, "localhost");
   server.timeout = 0;
 });
