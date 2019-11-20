@@ -8,10 +8,16 @@ function addText(text: string) {
   const el = document.createElement("div");
   el.classList.add("text");
   el.innerText = text;
+  el.addEventListener('transitionend', () => {
+    el.parentNode!.removeChild(el);
+  });
 
   const container = document.querySelector("#container")!;
   container.appendChild(el);
   container.scrollTo(0, container.scrollHeight);
+  setTimeout(() => {
+    el.style.opacity = '0';
+  }, 0);
 }
 
 function clearTexts() {
