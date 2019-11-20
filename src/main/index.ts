@@ -5,7 +5,7 @@ import * as express from "express";
 import * as readline from "readline";
 import * as commandLineArgs from "command-line-args";
 
-import { EVENT_CLEAR, EVENT_NEW_TEXT } from "../common/events";
+import { EVENT_CLEAR, EVENT_NEW_TEXT, EVENT_SET_STYLE } from "../common/events";
 
 const options = commandLineArgs(
   [
@@ -14,6 +14,11 @@ const options = commandLineArgs(
       alias: "p",
       type: Number,
       defaultValue: 4140
+    },
+    {
+      name: "style",
+      alias: "s",
+      type: String
     }
   ],
   {
@@ -26,7 +31,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow: BrowserWindow | null;
 
-function createMainWindow() {
+async function createMainWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
 
   const window = new BrowserWindow({
@@ -46,15 +51,20 @@ function createMainWindow() {
   }
 
   if (isDevelopment) {
-    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    await window.loadURL(
+      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
+    );
   } else {
-    window.loadURL(
+    await window.loadURL(
       formatUrl({
         pathname: path.join(__dirname, "index.html"),
         protocol: "file",
         slashes: true
       })
     );
+  }
+  if (options.style) {
+    window.webContents.send(EVENT_SET_STYLE, options.style);
   }
 
   window.on("closed", () => {
@@ -79,16 +89,16 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
+app.on("activate", async () => {
   // on macOS it is common to re-create a window even after all windows have been closed
   if (mainWindow === null) {
-    mainWindow = createMainWindow();
+    mainWindow = await createMainWindow();
   }
 });
 
 // create main BrowserWindow when electron is ready
-app.on("ready", () => {
-  mainWindow = createMainWindow();
+app.on("ready", async () => {
+  mainWindow = await createMainWindow();
 
   const app = express();
   app.use(express.json());
