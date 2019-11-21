@@ -28,5 +28,5 @@ body {
   padding-right: 5px;
 
   opacity: 1;
-  transition: opacity 5000ms ease-in;
+  transition: opacity 10s cubic-bezier(0.55, 0.06, 0.68, 0.19);
 }
