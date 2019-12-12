@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "command-line-args": "^5.1.1",
+    "electron-is-dev": "^1.1.0",
     "express": "^4.17.1",
     "source-map-support": "^0.5.16"
   },
@@ -27,5 +28,10 @@
     "sass-loader": "^8.0.0",
     "typescript": "^3.7.2",
     "webpack": "~4.41.2"
+  },
+  "electronWebpack": {
+    "main": {
+      "webpackConfig": "custom.webpack.additions.js"
+    }
   }
 }

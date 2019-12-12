@@ -4,8 +4,11 @@ import { format as formatUrl } from "url";
 import * as express from "express";
 import * as readline from "readline";
 import * as commandLineArgs from "command-line-args";
+import * as electronIsDev from "electron-is-dev";
 
 import { EVENT_CLEAR, EVENT_NEW_TEXT, EVENT_SET_STYLE } from "../common/events";
+
+declare var VERSION: string;
 
 const options = commandLineArgs(
   [
@@ -19,10 +22,16 @@ const options = commandLineArgs(
       name: "style",
       alias: "s",
       type: String
+    },
+    {
+      name: "no-banner",
+      alias: "B",
+      type: Boolean
     }
   ],
   {
-    partial: true
+    partial: true,
+    argv: process.argv.slice(electronIsDev ? 3 : 1)
   }
 );
 
@@ -123,4 +132,11 @@ app.on("ready", async () => {
 
   const server = app.listen(options.port, "localhost");
   server.timeout = 0;
+
+  if (options["no-banner"]) {
+    // nop
+  } else {
+    mainWindow!.webContents.send(EVENT_NEW_TEXT, `TextCast ${VERSION}`);
+    mainWindow!.webContents.send(EVENT_NEW_TEXT, `Listening on http://localhost:${options.port}`);
+  }
 });
